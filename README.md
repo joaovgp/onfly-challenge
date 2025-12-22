@@ -6,56 +6,48 @@ To configure and run this project you need the following pre-requisites:
 
 # How to configure and run the application
 
-First step is to generate a dotenv file. All settings for a local development and testing environment are already pre-configured in the `.env.example`, however for production it is **MANDATORY** to change the values.
+### Setup and run
+
+Run the following command:
 
 ```bash
-cp .env.example .env
+make setup
 ```
-
-Next it is necessary to install the dependencies. This repository uses Docker to ensure atomicity and guarantees that the application is OS-agnostic.
-
-Run the following command once to configure the necessary dependencies:
-
-```bash
-docker run --rm \
-  -v "$(pwd):/app" \
-  -w /app \
-  laravelsail/php83-composer \
-  composer install
-```
-
-> This command runs a temporary docker container and will be autoremoved once it has finished running. The temporary container will install the dependencies and mount the path to your current working directory inside the container, so make sure to run this command inside the project's folder.
 
 > Note: If the docker command fails, it probably means you do not have docker permissions configured correctly. To overcome this, you can add your user to the Docker group with `sudo usermod -aG docker $USER` and restart your computer.
 
-Then, the following command is what keeps the app running in the background:
+Then, build and run the frontend:
 
 ```bash
-./vendor/bin/sail up -d
+make frontend
 ```
 
-Once you have the application configured and running, the following commands will configure the database.
+### Start the application
 
 ```bash
-./vendor/bin/sail artisan key:generate
-./vendor/bin/sail artisan migrate --seed
+make up
 ```
 
-The seeding flag is to create a default admin account with the following credentials:
+```bash
+make frontend
+```
+
+### Stop the application
+
+```bash
+make down
+```
+
+# Accessing the application
+
+The setup creates a default admin account with the following credentials:
 
 -   Email: admin@admin.com
 -   Password: 123456
 
 > Note: For production environments, it is ABSOLUTELY NECESSARY to change the email and password after configuring the environment.
 
-The final step is to compile and run the Front-End application:
-
-```bash
-./vendor/bin/sail npm install
-./vendor/bin/sail npm run dev
-```
-
-After that, the application will be accessible from the following URL:
+The application will be accessible from the following URL:
 
 -   http://localhost
 
@@ -67,32 +59,26 @@ For checking emails (Mailpit), access the following URL:
 
 # Running automated tests
 
-To run automated tests, with the application running via `sail`, run the following command:
+To run automated tests, run the following command:
 
 ```bash
-./vendor/bin/sail artisan test
+make test
 ```
 
 # Useful commands
 
 **Tip**: As this project runs inside containers, always use the prefix `./vendor/bin/sail` for all commands, such as `artisan`, `composer` or `NPM`.
 
-To stop all containers:
-
-```bash
-./vendor/bin/sail stop
-```
-
 To monitor logs in real time:
 
 ```bash
-./vendor/bin/sail logs -f
+make logs
 ```
 
 To access a shell inside the container:
 
 ```bash
-./vendor/bin/sail shell
+make bash
 ```
 
 # Project Architecture
