@@ -94,3 +94,17 @@ To access a shell inside the container:
 ```bash
 ./vendor/bin/sail shell
 ```
+
+# Project Architecture
+
+### Inertia.js:
+
+Chosen to deliver a Single Page Application (SPA) experience using Vue 3 without the overhead of a separate REST/GraphQL API. It allows the frontend to stay tightly coupled with Laravel's routing and controllers, significantly increasing development velocity.
+
+### Laravel Sanctum & Policies:
+
+Implemented to handle Token-based Authentication and Role-Based Access Control (RBAC). Sanctum provides a lightweight auth layer, while Policies encapsulate business rules—ensuring users can only manage their own data while granting Administrators exclusive permissions.
+
+### Redis & Laravel Queues:
+
+Configured to handle notifications (emails) asynchronously. By offloading these tasks to a background worker, we ensure that the UI remains responsive and the user doesn't wait for external SMTP responses during status updates.
