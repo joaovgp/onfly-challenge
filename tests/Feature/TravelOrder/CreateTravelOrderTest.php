@@ -5,6 +5,7 @@ namespace Tests\Feature\TravelOrder;
 use App\Enums\OrderStatus;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,9 +21,7 @@ class CreateTravelOrderTest extends TestCase
             'return_date' => Carbon::now()->addDays(5)->toDateString('Y-m-d')
         ]);
 
-        dd($response->exception);
-        $response->assertStatus(302);
-        //@TODO: Check if route returned Unauthorized
+        $this->assertInstanceOf(AuthenticationException::class, $response->exception);
     }
 
     public function test_authenticated_user_can_create_travel_order(): void
