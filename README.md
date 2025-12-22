@@ -1,3 +1,10 @@
+# Pre-requisites
+
+To configure and run this project you need the following pre-requisites:
+
+-   Docker Enginer
+-   Git
+
 # How to configure and run the application
 
 First step is to generate a dotenv file. All settings for a local development and testing environment are already pre-configured in the `.env.example`, however for production it is **MANDATORY** to change the values.
@@ -18,6 +25,8 @@ docker run --rm \
  laravelsail/php83-composer:latest \
  composer install --ignore-platform-reqs
 ```
+
+> This command runs a temporary docker container and will be autoremoved once it has finished running. The temporary container will install the dependencies and mount the path to your current working directory inside the container, so make sure to run this command inside the project's folder.
 
 Then, the following command is what keeps the app running in the background:
 
