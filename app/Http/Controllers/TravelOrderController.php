@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OrderStatus;
 use App\Models\TravelOrder;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class TravelOrderController extends Controller
 {
@@ -15,40 +14,31 @@ class TravelOrderController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return Inertia::render('Dashboard', [
+            'orders' => auth()->user()->travelOrders()
+                ->latest()
+                ->paginate(10)
+                ->withQueryString()
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'destination' => ['required', 'string', 'max:255'],
-            'departure_date' => ['required', 'date'],
-            'return_date' => ['required', 'date', 'after_or_equal:departure_date'],
+            'destination' => 'required|string|max:255',
+            'departure_date' => 'required|date|after_or_equal:today',
+            'return_date' => 'required|date|after_or_equal:departure_date',
         ]);
 
-        $user = Auth::user();
-
-        TravelOrder::create([
-            'requester_id' => $user->id,
-            'requester_name' => $user->name,
-            'destination' => $validated['destination'],
-            'departure_date' => $validated['departure_date'],
-            'return_date' => $validated['return_date'],
-            'status' => OrderStatus::REQUESTED,
+        Auth::user()->travelOrders()->create([
+            ...$validated,
+            'requester_name' => Auth::user()->name,
         ]);
 
-        return redirect()->route('dashboard');
+        return redirect()->back()->with('message', 'Order created successfully!');
     }
 
     /**

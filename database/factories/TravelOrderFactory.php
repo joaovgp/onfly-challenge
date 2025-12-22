@@ -22,7 +22,7 @@ class TravelOrderFactory extends Factory
         $returnDate = fake()->dateTimeBetween($departureDate, $departureDate->format('Y-m-d H:i:s') . ' +2 week');
 
         return [
-            'requester_id' => User::factory(),
+            'user_id' => User::factory(),
             'requester_name' => fake()->name(),
             'destination' => fake()->city(),
             'departure_date' => $departureDate,

@@ -44,7 +44,7 @@ class CreateTravelOrderTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('travel_orders', [
-            'requester_id' => $user->id,
+            'user_id' => $user->id,
             'requester_name' => $user->name,
             'destination' => $destination,
             'departure_date' => $departure,
@@ -73,7 +73,7 @@ class CreateTravelOrderTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('travel_orders', [
-            'requester_id' => $user->id,
+            'user_id' => $user->id,
             'requester_name' => $user->name,
             'destination' => $destination,
             'departure_date' => $departure,

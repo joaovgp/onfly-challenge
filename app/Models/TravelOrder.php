@@ -17,12 +17,11 @@ class TravelOrder extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'requester_id',
-        'requester_name',
-        'destination',
-        'departure_date',
-        'return_date',
-        'status',
+        'requester_name', 
+        'destination', 
+        'departure_date', 
+        'return_date', 
+        'status'
     ];
 
     /**
@@ -33,8 +32,8 @@ class TravelOrder extends Model
     protected function casts(): array
     {
         return [
-            'departure_date' => 'date',
-            'return_date' => 'date',
+            'departure_date' => 'date:M d, Y',
+            'return_date' => 'date:M d, Y',
             'status' => OrderStatus::class,
         ];
     }
