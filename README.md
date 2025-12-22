@@ -49,7 +49,7 @@ The setup creates a default admin account with the following credentials:
 
 The application will be accessible from the following URL:
 
--   http://localhost
+-   http://localhost:8080
 
 For checking emails (Mailpit), access the following URL:
 

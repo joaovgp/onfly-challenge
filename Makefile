@@ -21,7 +21,7 @@ down:
 	$(SAIL) down
 
 frontend:
-	$(SAIL) npm install
+	$(SAIL) npm install --legacy-peer-deps
 	$(SAIL) npm run dev
 
 logs:
