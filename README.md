@@ -2,8 +2,7 @@
 
 To configure and run this project you need the following pre-requisites:
 
--   Docker Enginer
--   Git
+-   Docker Engine
 
 # How to configure and run the application
 
@@ -19,14 +18,15 @@ Run the following command once to configure the necessary dependencies:
 
 ```bash
 docker run --rm \
- -u "$(id -u):$(id -g)" \
- -v "$(pwd):/var/www/html" \
- -w /var/www/html \
- laravelsail/php83-composer:latest \
- composer install --ignore-platform-reqs
+  -v "$(pwd):/app" \
+  -w /app \
+  laravelsail/php83-composer \
+  composer install
 ```
 
 > This command runs a temporary docker container and will be autoremoved once it has finished running. The temporary container will install the dependencies and mount the path to your current working directory inside the container, so make sure to run this command inside the project's folder.
+
+> Note: If the docker command fails, it probably means you do not have docker permissions configured correctly. To overcome this, you can add your user to the Docker group with `sudo usermod -aG docker $USER` and restart your computer.
 
 Then, the following command is what keeps the app running in the background:
 
