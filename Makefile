@@ -21,7 +21,7 @@ down:
 	$(SAIL) down
 
 frontend:
-	$(SAIL) npm install --legacy-peer-deps
+	$(SAIL) npm ci --legacy-peer-deps
 	$(SAIL) npm run dev
 
 logs:
@@ -30,5 +30,5 @@ logs:
 bash:
 	$(SAIL) bash
 
-test:
+test: up
 	$(SAIL) artisan test

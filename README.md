@@ -59,7 +59,15 @@ For checking emails (Mailpit), access the following URL:
 
 # Running automated tests
 
-To run automated tests, run the following command:
+To run automated tests, you should have the frontend running.
+
+If it is not, then:
+
+```bash
+make frontend
+```
+
+To run the tests run the following command:
 
 ```bash
 make test
