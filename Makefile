@@ -15,13 +15,13 @@ up:
 
 setup: vendor up
 	$(SAIL) artisan key:generate
-	$(SAIL) artisan migrate
+	$(SAIL) artisan migrate:fresh --seed
 
 down:
 	$(SAIL) down
 
 frontend:
-	$(SAIL) npm ci --legacy-peer-deps
+	$(SAIL) npm install --legacy-peer-deps
 	$(SAIL) npm run dev
 
 logs:
