@@ -1,11 +1,36 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import StatusBadge from "@/Components/StatusBadge.vue";
+import AdminActions from "@/Components/AdminActions.vue";
 import ViewOrderModal from "@/Components/ViewOrderModal.vue";
+
+const { user } = usePage().props.auth;
 
 defineProps({
     orders: Object,
 });
+
+const handleApprove = (order) => {
+    router.post(
+        route("travel-orders.approve", { order: order.id }),
+        {},
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
+};
+
+const handleCancel = (order) => {
+    router.post(
+        route("travel-orders.cancel", { order: order.id }),
+        {},
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
+};
 </script>
 
 <template>
@@ -13,11 +38,12 @@ defineProps({
         <table class="w-full text-sm text-left text-gray-500">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
+                    <th class="px-6 py-3">Requester</th>
                     <th class="px-6 py-3">Destination</th>
                     <th class="px-6 py-3">Departure Date</th>
                     <th class="px-6 py-3">Return Date</th>
                     <th class="px-6 py-3">Status</th>
-                    <th class="px-1 py-3"></th>
+                    <th class="px-1 py-3">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +52,7 @@ defineProps({
                     :key="order.id"
                     class="bg-white border-b"
                 >
+                    <td class="px-6 py-4">{{ order.requester_name }}</td>
                     <td class="px-6 py-4">{{ order.destination }}</td>
                     <td class="px-6 py-4">
                         {{ order.departure_date }}
@@ -36,8 +63,16 @@ defineProps({
                     <td class="px-6 py-4 whitespace-nowrap">
                         <StatusBadge :status="order.status" />
                     </td>
-                    <td class="px-1 py-4">
-                        <ViewOrderModal :order="order" />
+                    <td class="px-1 py-4" title="View order">
+                        <div class="flex items-center gap-8">
+                            <ViewOrderModal :order="order" />
+                            <AdminActions
+                                v-if="user.is_admin"
+                                :order="order"
+                                @approve="handleApprove"
+                                @cancel="handleCancel"
+                            />
+                        </div>
                     </td>
                 </tr>
             </tbody>

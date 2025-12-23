@@ -17,10 +17,11 @@ class TravelOrder extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'requester_name', 
-        'destination', 
-        'departure_date', 
-        'return_date', 
+        'user_id',
+        'requester_name',
+        'destination',
+        'departure_date',
+        'return_date',
         'status'
     ];
 
@@ -36,5 +37,10 @@ class TravelOrder extends Model
             'return_date' => 'date:M d, Y',
             'status' => OrderStatus::class,
         ];
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Models\TravelOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,22 @@ class TravelOrderController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Dashboard', [
-            'orders' => auth()->user()->travelOrders()
+        $isAdmin = Auth::user()->is_admin;
+
+        if (!$isAdmin) {
+            $orders = Auth::user()->travelOrders()
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+        } else {
+            $orders = TravelOrder::query()
                 ->latest()
                 ->paginate(10)
-                ->withQueryString()
+                ->withQueryString();
+        }
+
+        return Inertia::render('Dashboard', [
+            'orders' => $orders
         ]);
     }
 
@@ -41,35 +53,25 @@ class TravelOrderController extends Controller
         return redirect()->back()->with('message', 'Order created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(TravelOrder $travelOrder)
+    public function approve(TravelOrder $order)
     {
-        //
+        if (!Auth::user()->is_admin) {
+            abort(403);
+        }
+
+        $order->update(['status' => OrderStatus::APPROVED]);
+
+        return redirect()->back()->with('message', 'Order approved successfully!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TravelOrder $travelOrder)
+    public function cancel(TravelOrder $order)
     {
-        //
-    }
+        if (!Auth::user()->is_admin) {
+            abort(403);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, TravelOrder $travelOrder)
-    {
-        //
-    }
+        $order->update(['status' => OrderStatus::CANCELED]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TravelOrder $travelOrder)
-    {
-        //
+        return redirect()->back()->with('message', 'Order canceled successfully!');
     }
 }

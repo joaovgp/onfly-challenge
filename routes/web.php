@@ -11,6 +11,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [TravelOrderController::class, 'index'])->name('dashboard');
 
     Route::post('/travel-orders', [TravelOrderController::class, 'store'])->name('travel-orders.store');
+
+    Route::post('/travel-orders/{order}/approve', [TravelOrderController::class, 'approve'])->name('travel-orders.approve');
+    Route::post('/travel-orders/{order}/cancel', [TravelOrderController::class, 'cancel'])->name('travel-orders.cancel');
 });
 
 Route::middleware('auth')->group(function () {
