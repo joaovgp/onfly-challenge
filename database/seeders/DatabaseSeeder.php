@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TravelOrder;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -13,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'admin@admin.com'],
             [
                 'name' => 'System Admin',
@@ -22,5 +23,9 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        for ($i = 0; $i < 20; $i++) {
+            TravelOrder::factory()->forUser($admin)->create();
+        }
     }
 }
