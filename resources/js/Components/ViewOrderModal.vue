@@ -13,7 +13,7 @@ const showModal = ref(false);
 </script>
 
 <template>
-    <section>
+    <section class="w-5 h-5">
         <button
             @click="showModal = true"
             class="text-blue-600 hover:text-blue-900 transition font-medium text-sm"
