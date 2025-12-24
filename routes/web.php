@@ -10,6 +10,7 @@ Route::redirect('/', '/login');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [TravelOrderController::class, 'index'])->name('dashboard');
 
+    Route::get('/travel-orders/{id}', [TravelOrderController::class, 'show'])->name('travel-orders.show');
     Route::post('/travel-orders', [TravelOrderController::class, 'store'])->name('travel-orders.store');
 
     Route::post('/travel-orders/{order}/approve', [TravelOrderController::class, 'approve'])->name('travel-orders.approve');

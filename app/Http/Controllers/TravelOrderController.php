@@ -4,39 +4,60 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Models\TravelOrder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class TravelOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
         $isAdmin = Auth::user()->is_admin;
+        $destination = $request->input('destination');
+        $status = $request->input('status');
+        $departureDate = $request->input('departure_date');
+        $returnDate = $request->input('return_date');
 
-        if (!$isAdmin) {
-            $orders = Auth::user()->travelOrders()
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
-        } else {
-            $orders = TravelOrder::query()
-                ->latest()
-                ->paginate(10)
-                ->withQueryString();
+        $query = $isAdmin ? TravelOrder::query() : Auth::user()->travelOrders();
+
+        if ($destination) {
+            $query->where('destination', 'like', "%{$destination}%");
         }
 
+        if ($status && count($status)) {
+            $query->whereIn('status', $status);
+        }
+
+        if ($departureDate) {
+            $query->whereDate('departure_date', '>=', $departureDate);
+        }
+
+        if ($returnDate) {
+            $query->whereDate('return_date', '<=', $returnDate);
+        }
+
+        $orders = $query->latest()->paginate(10)->withQueryString();
+
         return Inertia::render('Dashboard', [
-            'orders' => $orders
+            'orders' => $orders,
+            'order' => null,
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function show($id)
+    {
+        try {
+            $order = TravelOrder::query()->findOrFail($id);
+
+            return Inertia::render('Dashboard', [
+                'order' => $order
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->back()->withErrors(['id' => 'Travel order not found.']);
+        }
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -58,6 +79,9 @@ class TravelOrderController extends Controller
         if (!Auth::user()->is_admin) {
             abort(403);
         }
+        if ($order->status !== OrderStatus::REQUESTED) {
+            abort(400);
+        }
 
         $order->update(['status' => OrderStatus::APPROVED]);
 
@@ -68,6 +92,9 @@ class TravelOrderController extends Controller
     {
         if (!Auth::user()->is_admin) {
             abort(403);
+        }
+        if ($order->status !== OrderStatus::REQUESTED) {
+            abort(400);
         }
 
         $order->update(['status' => OrderStatus::CANCELED]);
