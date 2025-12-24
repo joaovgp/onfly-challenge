@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Models\TravelOrder;
+use App\Jobs\SendOrderStatusNotification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,7 @@ class TravelOrderController extends Controller
             $order = TravelOrder::query()->findOrFail($id);
 
             return Inertia::render('Dashboard', [
+                'orders' => null,
                 'order' => $order
             ]);
         } catch (ModelNotFoundException $e) {
@@ -85,6 +87,8 @@ class TravelOrderController extends Controller
 
         $order->update(['status' => OrderStatus::APPROVED]);
 
+        SendOrderStatusNotification::dispatch($order);
+
         return redirect()->back()->with('message', 'Order approved successfully!');
     }
 
@@ -98,6 +102,8 @@ class TravelOrderController extends Controller
         }
 
         $order->update(['status' => OrderStatus::CANCELED]);
+
+        SendOrderStatusNotification::dispatch($order);
 
         return redirect()->back()->with('message', 'Order canceled successfully!');
     }
