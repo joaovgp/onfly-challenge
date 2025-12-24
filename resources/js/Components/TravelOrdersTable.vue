@@ -2,7 +2,6 @@
 import { Link, router, usePage } from "@inertiajs/vue3";
 import StatusBadge from "@/Components/StatusBadge.vue";
 import AdminActions from "@/Components/AdminActions.vue";
-import ViewOrderModal from "@/Components/ViewOrderModal.vue";
 
 const { user } = usePage().props.auth;
 
@@ -43,7 +42,7 @@ const handleCancel = (order) => {
                     <th class="px-6 py-3">Departure Date</th>
                     <th class="px-6 py-3">Return Date</th>
                     <th class="px-6 py-3">Status</th>
-                    <th class="px-1 py-3">Actions</th>
+                    <th v-if="user.is_admin" class="px-1 py-3">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,11 +62,9 @@ const handleCancel = (order) => {
                     <td class="px-6 py-4 whitespace-nowrap">
                         <StatusBadge :status="order.status" />
                     </td>
-                    <td class="px-1 py-4" title="View order">
+                    <td v-if="user.is_admin" class="px-1 py-4" title="View order">
                         <div class="flex items-center gap-8">
-                            <ViewOrderModal :order="order" />
                             <AdminActions
-                                v-if="user.is_admin"
                                 :order="order"
                                 @approve="handleApprove"
                                 @cancel="handleCancel"
