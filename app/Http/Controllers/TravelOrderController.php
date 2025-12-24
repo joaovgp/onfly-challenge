@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatus;
 use App\Models\TravelOrder;
 use App\Jobs\SendOrderStatusNotification;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class TravelOrderController extends Controller
@@ -48,16 +48,24 @@ class TravelOrderController extends Controller
 
     public function show($id)
     {
-        try {
-            $order = TravelOrder::query()->findOrFail($id);
+        $user = Auth::user();
+        $orderQuery = TravelOrder::query();
 
-            return Inertia::render('Dashboard', [
-                'orders' => null,
-                'order' => $order
-            ]);
-        } catch (ModelNotFoundException $e) {
-            return redirect()->back()->withErrors(['id' => 'Travel order not found.']);
+        if (!$user->is_admin) {
+            $orderQuery->where('user_id', $user->id);
         }
+
+        $order = $orderQuery->find($id);
+
+        if (!$order) {
+            throw ValidationException::withMessages([
+                'id' => 'Order not found or you do not have permission to view it.'
+            ]);
+        }
+
+        return Inertia::render('Dashboard/Partials/ViewTravelOrder', [
+            'order' => $order
+        ]);
     }
 
     public function store(Request $request)

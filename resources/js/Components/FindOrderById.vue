@@ -24,11 +24,9 @@ watch(
 
 const submit = () => {
     form.get(route("travel-orders.show", { id: form.id }), {
-        onFinish: () => {
-            if (!form.hasErrors) {
-                showModal.value = false;
-                form.reset();
-            }
+        onSuccess: () => {
+            showModal.value = false;
+            form.reset();
         },
     });
 };
