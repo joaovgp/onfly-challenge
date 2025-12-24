@@ -14,6 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (env('APP_ENV', 'production') === 'production') {
+            return;
+        }
+
+        // Seeding to easily test and use the application without having to manually insert data
         $admin = User::updateOrCreate(
             ['email' => 'admin@admin.com'],
             [
@@ -24,8 +29,13 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             TravelOrder::factory()->forUser($admin)->create();
+
+            $user = User::factory()->create();
+            for ($j = 0; $j < 10; $j++) {
+                TravelOrder::factory()->forUser($user)->create();
+            }
         }
     }
 }

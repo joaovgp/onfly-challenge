@@ -35,6 +35,7 @@ class TravelOrderFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'user_id' => $user->id,
+            'requester_name' => $user->name,
         ]);
     }
 }

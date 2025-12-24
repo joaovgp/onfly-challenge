@@ -40,14 +40,14 @@ make down
 
 # Accessing the application
 
-The setup creates a default admin account with the following credentials:
+The setup creates a default admin account on non-production environments with the following credentials:
 
 -   Email: admin@admin.com
 -   Password: 123456
 
 > Note: For production environments, it is ABSOLUTELY NECESSARY to change the email and password after configuring the environment.
 
-The application will be accessible from the following URL:
+The development application will be accessible from the following URL:
 
 -   http://localhost:8080
 
